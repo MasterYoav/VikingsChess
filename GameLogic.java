@@ -1,9 +1,12 @@
+import org.junit.jupiter.api.parallel.Resources;
+
 public class GameLogic implements PlayableLogic {
     private ConcretePlayer Defender;
     private ConcretePlayer Attacker;
+    private boolean gameFinished =false;
     private static final int[][] startboard = {{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 1, 0, 2, 2, 3, 2, 2, 0, 1, 1}, {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}};
-    private final static ConcretePiece[][] board = new ConcretePiece[11][11];
+    private static ConcretePiece[][] board = new ConcretePiece[11][11];
     private static boolean secondPlayerTurn;
     public GameLogic(int size) {
         Player Attack = new ConcretePlayer(false);
@@ -41,16 +44,18 @@ public class GameLogic implements PlayableLogic {
 
                 // If the movement path is clear, update the board
                 board[b.getRow()][b.getCol()] = piece;
+                System.out.println(a.toString()+" "+b.toString());
+                isGameFinished();
                 board[a.getRow()][a.getCol()] = null;
                 secondPlayerTurn=!secondPlayerTurn;
                 return true;
             }
         }
 
+
         return false;
     }
-
-
+    
     // Helper method to check if the path is clear for the pawn's move
     private boolean isPathClear(Position a, Position b) {
         int rowDiff = b.getRow() - a.getRow();
@@ -79,7 +84,7 @@ public class GameLogic implements PlayableLogic {
 
     @Override
     public Piece getPieceAtPosition(Position position) {
-        if(position==null){return null;} ;
+        if(position==null){return null;} 
         return board[position.getRow()][position.getCol()];
     }
 
@@ -100,11 +105,9 @@ public class GameLogic implements PlayableLogic {
             return Defender;
         }
 
-
-
     @Override
     public boolean isGameFinished() {
-        return false;
+        return gameFinished;
     }
 
     @Override
