@@ -1,22 +1,22 @@
-import java.util.Scanner;
-
 public class GameLogic implements PlayableLogic {
     private ConcretePlayer Defender;
     private ConcretePlayer Attacker;
     private static final int[][] startboard = {{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 1, 0, 2, 2, 3, 2, 2, 0, 1, 1}, {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}};
-    private static ConcretePiece[][] board = new ConcretePiece[11][11];
+    private final static ConcretePiece[][] board = new ConcretePiece[11][11];
     private static boolean secondPlayerTurn;
     public GameLogic(int size) {
+        Player Attack = new ConcretePlayer(false);
+        Player Defence = new ConcretePlayer(true);
         reset();
+
     }
 
 
     @Override
     public boolean move(Position a, Position b) {
         ConcretePiece piece = board[a.getRow()][a.getCol()];
-
-        if (piece != null) {
+        if (piece != null&& piece.getOwner().isPlayerOne()!=secondPlayerTurn) {
             int rowDiff = Math.abs(b.getRow() - a.getRow());
             int colDiff = Math.abs(b.getCol() - a.getCol());
 
@@ -42,7 +42,7 @@ public class GameLogic implements PlayableLogic {
                 // If the movement path is clear, update the board
                 board[b.getRow()][b.getCol()] = piece;
                 board[a.getRow()][a.getCol()] = null;
-
+                secondPlayerTurn=!secondPlayerTurn;
                 return true;
             }
         }
@@ -85,19 +85,19 @@ public class GameLogic implements PlayableLogic {
 
     @Override
     public Player getFirstPlayer() {
-        if (Defender == null) {
-            Defender = new ConcretePlayer(false);
+        if (Attacker == null) {
+            Attacker = new ConcretePlayer(false);
         }
-        return Defender;
+        return Attacker;
 
     }
 
     @Override
     public Player getSecondPlayer() {
-            if (Attacker == null) {
-                Attacker = new ConcretePlayer(false);
+            if (Defender == null) {
+                Defender = new ConcretePlayer(false);
             }
-            return Attacker;
+            return Defender;
         }
 
 
