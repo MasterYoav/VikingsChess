@@ -17,8 +17,6 @@ public class Position {
 
     @Override
     public String toString() {
-        // Convert row and column indices to chessboard coordinates (e.g., "A1", "B2")
-        char colChar = (char) ('A' + col);
-        return colChar + Integer.toString(row + 1);
+        return (Integer.toString(row)+" "+Integer.toString(col));
     }
 }
