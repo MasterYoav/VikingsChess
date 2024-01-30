@@ -124,7 +124,7 @@ public class GameLogic implements PlayableLogic {
             if (startboard[i][j] == 1) {
                 p = new Pawn(Atk);
             }
-            if (startboard[i][j] == 2) {
+            if (startboard[i][j] == 2) {//yoav oajaskjhda
                 p = new Pawn(Def);
             }
             if (startboard[i][j] == 3) {
