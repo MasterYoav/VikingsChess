@@ -9,8 +9,8 @@ public class GameLogic implements PlayableLogic {
     private static ConcretePiece[][] board = new ConcretePiece[11][11];
     private static boolean secondPlayerTurn;
     public GameLogic(int size) {
-        Player Attack = new ConcretePlayer(false);
-        Player Defence = new ConcretePlayer(true);
+        Attacker = new ConcretePlayer(false);
+        Defender = new ConcretePlayer(true);
         reset();
 
     }
@@ -19,6 +19,7 @@ public class GameLogic implements PlayableLogic {
     @Override
     public boolean move(Position a, Position b) {
         ConcretePiece piece = board[a.getRow()][a.getCol()];
+        if(piece.getType().equals("♙")&& b.isCorner()){return false;}
         if (piece != null&& piece.getOwner().isPlayerOne()!=secondPlayerTurn) {
             int rowDiff = Math.abs(b.getRow() - a.getRow());
             int colDiff = Math.abs(b.getCol() - a.getCol());
@@ -90,19 +91,19 @@ public class GameLogic implements PlayableLogic {
 
     @Override
     public Player getFirstPlayer() {
-        if (Attacker == null) {
-            Attacker = new ConcretePlayer(false);
-        }
-        return Attacker;
+//        if (Attacker == null) {
+//            Attacker = new ConcretePlayer(false);
+//        }
+        return Defender;
 
     }
 
     @Override
     public Player getSecondPlayer() {
-            if (Defender == null) {
-                Defender = new ConcretePlayer(false);
-            }
-            return Defender;
+//            if (Defender == null) {
+//                Defender = new ConcretePlayer(false);
+//            }
+            return Attacker;
         }
 
     @Override
