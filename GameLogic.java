@@ -3,7 +3,7 @@ import org.junit.jupiter.api.parallel.Resources;
 public class GameLogic implements PlayableLogic {
     private ConcretePlayer Defender;
     private ConcretePlayer Attacker;
-    private boolean gameFinished =false;
+    private static boolean gameFinished =false;
     private static final int[][] startboard = {{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 1, 0, 2, 2, 3, 2, 2, 0, 1, 1}, {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}};
     private static ConcretePiece[][] board = new ConcretePiece[11][11];
@@ -44,11 +44,16 @@ public class GameLogic implements PlayableLogic {
                 }
 
                 // If the movement path is clear, update the board
+                System.out.println("start position ("+a.toString()+")  end position ("+b.toString() +")");
                 board[b.getRow()][b.getCol()] = piece;
-                System.out.println(a.toString()+" "+b.toString());
-                isGameFinished();
                 board[a.getRow()][a.getCol()] = null;
+                eatPiece(b);
+                isGameFinished();
                 secondPlayerTurn=!secondPlayerTurn;
+                if(piece.getType().equals("♔")&&b.isCorner()){
+                    gameFinished=true;
+                    Defender.win();
+                }
                 return true;
             }
         }
@@ -56,7 +61,163 @@ public class GameLogic implements PlayableLogic {
 
         return false;
     }
-    
+    private void eatPiece(Position pivot){
+        if (pivot==null){return;}
+        ConcretePiece pivotP=(ConcretePiece) getPieceAtPosition(pivot);
+        if (pivotP==null){return;}
+        if(pivotP.getType().equals("♔")){return;} // king cant eat
+        Position left =Position.getLeft(pivot);
+        Position right =Position.getRight(pivot);
+        Position up=Position.getUp(pivot);
+        Position down=Position.getDown(pivot);
+
+        //checking the 4 possible affected ConcretePices
+        //Left check
+        if(left!=null){
+            ConcretePiece leftP=(ConcretePiece)getPieceAtPosition(left);
+            if(leftP!=null){
+                if (leftP.getType().equals("♔")){//checking if our move killed the king
+                    if(isKingDead(left)){
+                        GameLogic.gameFinished=true;
+                    }
+                }
+                if(left.isLeftSide()&&!leftP.getType().equals("♔")){//checking if our move kill a pawn next to the left wall
+                    if(leftP.getOwner()!= pivotP.getOwner()){
+                        board[left.getRow()][left.getCol()] = null;
+                    }
+                }
+                else {//we need to check the left side of "left"
+                    Position leftOFleft=Position.getLeft(left);
+                    if (leftOFleft!=null){
+                        ConcretePiece leftOFleftP=(ConcretePiece)getPieceAtPosition(leftOFleft);
+                        if(leftOFleftP!=null && !leftP.getType().equals("♔")){
+                            if (!leftOFleftP.getType().equals("♔")) {
+                                if (leftOFleftP.getOwner() == pivotP.getOwner() && pivotP.getOwner() != leftP.getOwner()) {
+                                    board[left.getRow()][left.getCol()] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //Right check
+        if(right!=null){
+            ConcretePiece rightP=(ConcretePiece)getPieceAtPosition(right);
+            if(rightP!=null){
+                if (rightP.getType().equals("♔")){//checking if our move killed the king
+                    if(isKingDead(right)){
+                        GameLogic.gameFinished=true;
+                    }
+                }
+                if(right.isRightSide()&&!rightP.getType().equals("♔")){//checking if our move kill a pawn next to the left wall
+                    if(rightP.getOwner()!= pivotP.getOwner()){
+                        board[right.getRow()][right.getCol()] = null;
+                    }
+                }
+                else {//we need to check the right side of "right"
+                    Position rightOFright=Position.getRight(right);
+                    if (rightOFright!=null){
+                        ConcretePiece rightOFrightP=(ConcretePiece)getPieceAtPosition(rightOFright);
+                        if(rightOFrightP!=null&& !rightP.getType().equals("♔")){
+                            if(!rightOFrightP.getType().equals("♔")) {
+                                if (rightOFrightP.getOwner() == pivotP.getOwner() && pivotP.getOwner() != rightP.getOwner()) {
+                                    board[right.getRow()][right.getCol()] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Down check
+        if(down!=null){
+            ConcretePiece downP=(ConcretePiece)getPieceAtPosition(down);
+            if(downP!=null){
+                if (downP.getType().equals("♔")){//checking if our move killed the king
+                    if(isKingDead(down)){
+                        GameLogic.gameFinished=true;
+                    }
+                }
+                if(down.isDownSide()&&!downP.getType().equals("♔")){//checking if our move kill a pawn next to the left wall
+                    if(downP.getOwner()!= pivotP.getOwner()){
+                        board[down.getRow()][down.getCol()] = null;
+                    }
+                }
+                else {//we need to check the down side of "down"
+                    Position downOFdown=Position.getDown(down);
+                    if (downOFdown!=null){
+                        ConcretePiece downOFdownP=(ConcretePiece)getPieceAtPosition(downOFdown);
+                        if(downOFdownP!=null && !downP.getType().equals("♔")){
+                            if(!downOFdownP.getType().equals("♔")){
+                                if(downOFdownP.getOwner()==pivotP.getOwner()&&pivotP.getOwner()!=downP.getOwner()){
+                                    board[down.getRow()][down.getCol()] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //Up check
+        if(up!=null){
+            ConcretePiece upP=(ConcretePiece)getPieceAtPosition(up);
+            if(upP!=null){
+                if (upP.getType().equals("♔")){//checking if our move killed the king
+                    if(isKingDead(up)){
+                        GameLogic.gameFinished=true;
+                    }
+                }
+                if(up.isUpSide()&&!upP.getType().equals("♔")){//checking if our move kill a pawn next to the left wall
+                    if(upP.getOwner()!= pivotP.getOwner()){
+                        board[up.getRow()][up.getCol()] = null;
+                    }
+                }
+                else {//we need to check the up side of "up"
+                    Position upOFup=Position.getUp(up);
+                    if (upOFup!=null){
+                        ConcretePiece upOFupP=(ConcretePiece)getPieceAtPosition(upOFup);
+                        if(upOFupP!=null && !upP.getType().equals("♔")){
+                            if(!upOFupP.getType().equals("♔")){
+                                if(upOFupP.getOwner()==pivotP.getOwner()&&pivotP.getOwner()!=upP.getOwner()){
+                                    board[up.getRow()][up.getCol()] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    private boolean isKingDead(Position pivot) {
+        Player p = getPieceAtPosition(pivot).getOwner();
+        Position left = Position.getLeft(pivot);
+        Position right = Position.getRight(pivot);
+        Position up = Position.getUp(pivot);
+        Position down = Position.getDown(pivot);
+        int countPiece = 0;
+        if(left != null && getPieceAtPosition(left) != null && getPieceAtPosition(left).getOwner() != p){
+            countPiece++;
+        }
+        if(right != null && getPieceAtPosition(right) != null && getPieceAtPosition(right).getOwner() != p){
+            countPiece++;
+        }
+        if(up != null && getPieceAtPosition(up) != null && getPieceAtPosition(up).getOwner() != p){
+            countPiece++;
+        }
+        if(down != null && getPieceAtPosition(down) != null && getPieceAtPosition(down).getOwner() != p){
+            countPiece++;
+        }
+        if((pivot.isSide() && countPiece == 3) || countPiece == 4){
+            Attacker.win();
+            return true;
+        }
+        return false;
+    }
     // Helper method to check if the path is clear for the pawn's move
     private boolean isPathClear(Position a, Position b) {
         int rowDiff = b.getRow() - a.getRow();
@@ -106,20 +267,20 @@ public class GameLogic implements PlayableLogic {
             return Attacker;
         }
 
-    @Override
-    public boolean isGameFinished() {
-        return gameFinished;
-    }
 
     @Override
     public boolean isSecondPlayerTurn() {
         return secondPlayerTurn;
+    }
+    public boolean isGameFinished(){
+        return GameLogic.gameFinished;
     }
 
 
     @Override
     public void reset() {
         GameLogic.secondPlayerTurn=true;
+        GameLogic.gameFinished=false;
         Player Def = new ConcretePlayer(true);
         Player Atk = new ConcretePlayer(false);
     for (int j=0;j<11;j++){
