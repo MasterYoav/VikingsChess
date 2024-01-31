@@ -1,7 +1,4 @@
-import org.junit.jupiter.api.parallel.Resources;
-
-import java.util.ArrayList;
-import java.util.Stack;
+import java.util.*;
 
 public class GameLogic implements PlayableLogic {
     private ConcretePlayer Defender;
@@ -11,6 +8,7 @@ public class GameLogic implements PlayableLogic {
             {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 1, 0, 2, 2, 3, 2, 2, 0, 1, 1}, {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}};
     private static ConcretePiece[][] board = new ConcretePiece[11][11];
     private static boolean secondPlayerTurn;
+    private static boolean secondPlayerWon;
     private static Stack<ConcretePiece[][]> BoardHistory = new Stack<ConcretePiece[][]>();
     private static Stack<ConcretePiece> lastPieceMoved = new Stack<ConcretePiece>();
     private static ArrayList<ConcretePiece> p1Pieces = new ArrayList<ConcretePiece>();
@@ -60,7 +58,7 @@ public class GameLogic implements PlayableLogic {
                 board[a.getRow()][a.getCol()] = null;
                 eatPiece(b);
                 piece.addMove(b);
-                piece.addDistanceCount(a.distance(b));
+                piece.addDistance(a.distance(b));
                 allPiecesAtPosition[b.getRow()][b.getCol()].add(piece);
                 ConcretePiece[][] currentBoard = copyBoard();
                 GameLogic.BoardHistory.push(currentBoard);
@@ -71,12 +69,84 @@ public class GameLogic implements PlayableLogic {
                     gameFinished=true;
                     Defender.win();
                 }
+                if(GameLogic.gameFinished){
+                    statisticMoves();
+                    sofSaif();
+
+                    statisticKills();
+                    sofSaif();
+
+                    statisticDistance();
+                    sofSaif();
+
+                    statisticAllPiecesAtPosition();
+                    sofSaif();
+
+                    return true;
+                }
                 return true;
             }
         }
-
-
         return false;
+    }
+
+    public void statisticMoves(){
+        Collections.sort(p1Pieces, new moveSort());
+        Collections.sort(p2Pieces, new moveSort());
+        if(GameLogic.secondPlayerWon){
+            for (int i = 0; i < p2Pieces.size(); i++) {
+                if(p2Pieces.get(i).getMoveSize() > 1){
+                    System.out.println(p2Pieces.get(i).getId() + ": [" + p2Pieces.get(i).printMove() + "]");}
+            }
+            for (int j = 0; j < p1Pieces.size(); j++) {
+                if(p1Pieces.get(j).getMoveSize() > 1){
+                    System.out.println(p1Pieces.get(j).getId() + ": [" + p1Pieces.get(j).printMove() + "]");}
+            }
+        }
+        else{
+            for (int j = 0; j < p1Pieces.size(); j++) {
+                if(p1Pieces.get(j).getMoveSize() > 1){
+                    System.out.println(p1Pieces.get(j).getId() + ": [" + p1Pieces.get(j).printMove() + "]");}
+            }
+            for (int i = 0; i < p2Pieces.size(); i++) {
+                if(p2Pieces.get(i).getMoveSize() > 1){
+                    System.out.println(p2Pieces.get(i).getId() + ": [" + p2Pieces.get(i).printMove() + "]");}
+            }
+        }
+    }
+
+    public void statisticDistance(){
+        Collections.sort(allPieces, new distanceSort());
+        for (int i = 0; i < allPieces.size(); i++) {
+            if(allPieces.get(i).getDistance() > 0){
+                System.out.println(allPieces.get(i).getId() + ": " + allPieces.get(i).getDistance() + " squares");
+            }
+        }
+    }
+
+    public void statisticKills(){
+        Collections.sort(allPawns, new killSort());
+        for (int i = 0; i < allPawns.size(); i++) {
+            if(allPawns.get(i).getKills() > 0){
+                System.out.println(allPawns.get(i).getId() + ": " + allPawns.get(i).getKills() + " kills");}
+        }
+    }
+    private void statisticAllPiecesAtPosition(){
+        ArrayList<Position> allPositions = new ArrayList<Position>();
+        Set<ConcretePiece> pos;
+        for (int i = 0; i < 11; i++) {
+            for (int j = 0; j < 11; j++) {
+                allPositions.add(new Position(i,j));
+                pos = new HashSet<ConcretePiece>(allPiecesAtPosition[i][j]);
+                allPositions.get(i * 11 + j).setCountPieces(pos.size());
+            }
+        }
+        Collections.sort(allPositions, new piecesSort());
+        for (int i = 0; i < allPositions.size(); i++) {
+            if(allPositions.get(i).getCountPieces() > 1){
+                System.out.println(allPositions.get(i).toString() + allPositions.get(i).getCountPieces() + " pieces");
+            }
+        }
     }
     private void eatPiece(Position pivot){
         if (pivot==null){return;}
@@ -88,7 +158,7 @@ public class GameLogic implements PlayableLogic {
         Position up=Position.getUp(pivot);
         Position down=Position.getDown(pivot);
 
-        //checking the 4 possible affected ConcretePices
+        //checking the 4 possible affected ConcretePieces
         //Left check
         if(left!=null){
             ConcretePiece leftP=(ConcretePiece)getPieceAtPosition(left);
@@ -269,18 +339,12 @@ public class GameLogic implements PlayableLogic {
 
     @Override
     public Player getFirstPlayer() {
-//        if (Attacker == null) {
-//            Attacker = new ConcretePlayer(false);
-//        }
         return Defender;
 
     }
 
     @Override
     public Player getSecondPlayer() {
-//            if (Defender == null) {
-//                Defender = new ConcretePlayer(false);
-//            }
             return Attacker;
         }
 
@@ -373,11 +437,17 @@ public class GameLogic implements PlayableLogic {
         }
 
         int distance = src.distance(dest);
-        pieceStatistics.addDistanceCount(-distance);
+        pieceStatistics.addDistance(-distance);
 
         if(!allPiecesAtPosition[dest.getRow()][dest.getCol()].isEmpty()){
             allPiecesAtPosition[dest.getRow()][dest.getCol()].remove(allPiecesAtPosition[dest.getRow()][dest.getCol()].size()-1);
         }
+    }
+    public void sofSaif(){
+        for (int i = 1; i <= 75; i++) {
+            System.out.print("*");
+        }
+        System.out.print("\n");
     }
     private int killCount(ConcretePiece[][] current, ConcretePiece[][] last) {
         int countCurr = 0;
@@ -395,5 +465,10 @@ public class GameLogic implements PlayableLogic {
     public int getBoardSize() {
         return 11;
     }
+    public static boolean Player2Won(){
+        return secondPlayerWon;
+    }
 }
+
+
 

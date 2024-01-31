@@ -1,7 +1,7 @@
 public class Position {
     private int row;
     private int col;
-
+    private int countPieces;
     public Position(int row, int col) {
         this.row = row;
         this.col = col;
@@ -66,5 +66,11 @@ public class Position {
     @Override
     public String toString() {
         return (Integer.toString(row)+" "+Integer.toString(col));
+    }
+    public void setCountPieces(int num){
+        this.countPieces = num;
+    }
+    public int getCountPieces(){
+        return this.countPieces;
     }
 }

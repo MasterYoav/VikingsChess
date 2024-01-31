@@ -54,12 +54,6 @@ public abstract class ConcretePiece implements Piece {
         }
         return s;
     }
-    public int getDistance(){
-        return this.distance;
-    }
-    public void addDistanceCount(int num){
-        this.distance = this.distance + num;
-    }
     @Override
     public Player getOwner() {
         return Owner;
@@ -68,8 +62,17 @@ public abstract class ConcretePiece implements Piece {
     @Override
     abstract public String  getType() ;
 
-        // Add other methods specific to piece behavior if needed
+    public String getId() {return id;}
+    public int getCountId(){
+        return this.distance;
     }
+    public int getDistance(){
+        return this.distance;
+    }
+    public void addDistance(int num){
+        this.distance = this.distance + num;
+    }
+ }
 
 
 
