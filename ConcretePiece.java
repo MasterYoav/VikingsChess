@@ -64,7 +64,7 @@ public abstract class ConcretePiece implements Piece {
 
     public String getId() {return id;}
     public int getCountId(){
-        return this.distance;
+        return this.countId;
     }
     public int getDistance(){
         return this.distance;

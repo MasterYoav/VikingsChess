@@ -7,8 +7,8 @@ public class GameLogic implements PlayableLogic {
     private static final int[][] startboard = {{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 1, 0, 2, 2, 3, 2, 2, 0, 1, 1}, {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}};
     private static ConcretePiece[][] board = new ConcretePiece[11][11];
-    private static boolean secondPlayerTurn;
-    private static boolean secondPlayerWon;
+    private static boolean AttackerTurn;
+    private static boolean AttackerWon;
     private static Stack<ConcretePiece[][]> BoardHistory = new Stack<ConcretePiece[][]>();
     private static Stack<ConcretePiece> lastPieceMoved = new Stack<ConcretePiece>();
     private static ArrayList<ConcretePiece> p1Pieces = new ArrayList<ConcretePiece>();
@@ -27,7 +27,7 @@ public class GameLogic implements PlayableLogic {
     public boolean move(Position a, Position b) {
         ConcretePiece piece = board[a.getRow()][a.getCol()];
         if(piece.getType().equals("♙")&& b.isCorner()){return false;}
-        if (piece != null&& piece.getOwner().isPlayerOne()!=secondPlayerTurn) {
+        if (piece != null&& piece.getOwner().isPlayerOne()!= AttackerTurn) {
             int rowDiff = Math.abs(b.getRow() - a.getRow());
             int colDiff = Math.abs(b.getCol() - a.getCol());
 
@@ -62,7 +62,7 @@ public class GameLogic implements PlayableLogic {
                 GameLogic.BoardHistory.push(currentBoard);
                 lastPieceMoved.push(piece);
                 isGameFinished();
-                secondPlayerTurn=!secondPlayerTurn;
+                AttackerTurn =!AttackerTurn;
                 if(piece.getType().equals("♔")&&b.isCorner()){
                     gameFinished=true;
                     Defender.win();
@@ -74,11 +74,11 @@ public class GameLogic implements PlayableLogic {
                     statisticKills();
                     sofSaif();
 
-//                    statisticDistance();
-//                    sofSaif();
+                    statisticDistance();
+                    sofSaif();
 
-//                    statisticAllPiecesAtPosition();
-//                    sofSaif();
+                    statisticAllPiecesAtPosition();
+                    sofSaif();
 
                     return true;
                 }
@@ -90,10 +90,10 @@ public class GameLogic implements PlayableLogic {
     public void statisticMoves(){
         Collections.sort(p1Pieces, new moveSort());
         Collections.sort(p2Pieces, new moveSort());
-        if(GameLogic.secondPlayerWon){
+        if(GameLogic.AttackerWon){
             for (int i = 0; i < p2Pieces.size(); i++) {
                 if(p2Pieces.get(i).getMoveSize() > 1){
-                    System.out.println(p2Pieces.get(i).getId() + ": [" + p2Pieces.get(i).printMove() + "]");}
+                    System.out.println(p2Pieces.get(i).getId() + ": [" + "("+p2Pieces.get(i).printMove()+")" + "]");}
 //                else{
 //                    System.out.println(p2Pieces.get(i).getId() + ": not moved");
 //                }
@@ -133,6 +133,7 @@ public class GameLogic implements PlayableLogic {
     public void statisticDistance(){
         Collections.sort(allPieces, new distanceSort());
         for (int i = 0; i < allPieces.size(); i++) {
+
             if(allPieces.get(i).getDistance() > 0){
                 System.out.println(allPieces.get(i).getId() + ": " + allPieces.get(i).getDistance() + " squares");
             }
@@ -360,6 +361,7 @@ public class GameLogic implements PlayableLogic {
         }
         if((pivot.isSide() && countPiece == 3) || countPiece == 4){
             Attacker.win();
+            AttackerWon =true;
             return true;
         }
         return false;
@@ -402,15 +404,16 @@ public class GameLogic implements PlayableLogic {
         }
     @Override
     public boolean isSecondPlayerTurn() {
-        return secondPlayerTurn;
+        return AttackerTurn;
     }
     public boolean isGameFinished(){
         return GameLogic.gameFinished;
     }
     @Override
     public void reset() {
-        GameLogic.secondPlayerTurn=true;
-        GameLogic.gameFinished=false;
+        AttackerTurn =true;
+        gameFinished=false;
+        AttackerWon=false;
         Player Def = new ConcretePlayer(true);
         Player Atk = new ConcretePlayer(false);
     for (int j=0;j<11;j++){
@@ -471,7 +474,7 @@ public class GameLogic implements PlayableLogic {
             ConcretePiece[][] current = GameLogic.BoardHistory.peek();
             changeStats(current, last);
             switchBoard(current);
-            GameLogic.secondPlayerTurn = !GameLogic.secondPlayerTurn;
+            GameLogic.AttackerTurn = !GameLogic.AttackerTurn;
         }
     }
     private void changeStats(ConcretePiece[][] current, ConcretePiece[][] last) {
@@ -485,12 +488,12 @@ public class GameLogic implements PlayableLogic {
             ((Pawn) pieceStatistics).addKill(-count);
         }
 
-//        int distance = src.distance(dest);
-//        pieceStatistics.addDistance(-distance);
-//
-//        if(!allPiecesAtPosition[dest.getRow()][dest.getCol()].isEmpty()){
-//            allPiecesAtPosition[dest.getRow()][dest.getCol()].remove(allPiecesAtPosition[dest.getRow()][dest.getCol()].size()-1);
-//        }
+        int distance = src.distance(dest);
+        pieceStatistics.addDistance(-distance);
+
+        if(!allPiecesAtPosition[dest.getRow()][dest.getCol()].isEmpty()){
+            allPiecesAtPosition[dest.getRow()][dest.getCol()].remove(allPiecesAtPosition[dest.getRow()][dest.getCol()].size()-1);
+        }
     }
     public void sofSaif(){
         for (int i = 1; i <= 75; i++) {
@@ -514,7 +517,7 @@ public class GameLogic implements PlayableLogic {
         return 11;
     }
     public static boolean Player2Won(){
-        return secondPlayerWon;
+        return AttackerWon;
     }
 }
 

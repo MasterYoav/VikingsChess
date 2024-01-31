@@ -65,7 +65,7 @@ public class Position {
     }
     @Override
     public String toString() {
-        return (Integer.toString(row)+" "+Integer.toString(col));
+        return "("+row+", "+col+")";
     }
     public void setCountPieces(int num){
         this.countPieces = num;
