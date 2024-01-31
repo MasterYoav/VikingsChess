@@ -76,7 +76,7 @@ public class GameLogic implements PlayableLogic {
                     statisticKills();
                     sofSaif();
 
-                    statisticDistance();
+                    //statisticDistance();
                     sofSaif();
 
                     statisticAllPiecesAtPosition();
@@ -97,20 +97,32 @@ public class GameLogic implements PlayableLogic {
             for (int i = 0; i < p2Pieces.size(); i++) {
                 if(p2Pieces.get(i).getMoveSize() > 1){
                     System.out.println(p2Pieces.get(i).getId() + ": [" + p2Pieces.get(i).printMove() + "]");}
+                else{
+                    System.out.println(p2Pieces.get(i).getId() + ": not moved");
+                }
             }
             for (int j = 0; j < p1Pieces.size(); j++) {
                 if(p1Pieces.get(j).getMoveSize() > 1){
                     System.out.println(p1Pieces.get(j).getId() + ": [" + p1Pieces.get(j).printMove() + "]");}
+                else{
+                    System.out.println(p1Pieces.get(j).getId() + ": not move");
+                }
             }
         }
         else{
             for (int j = 0; j < p1Pieces.size(); j++) {
                 if(p1Pieces.get(j).getMoveSize() > 1){
                     System.out.println(p1Pieces.get(j).getId() + ": [" + p1Pieces.get(j).printMove() + "]");}
+                else{
+                    System.out.println(p1Pieces.get(j).getId() + ": not moved");
+                }
             }
             for (int i = 0; i < p2Pieces.size(); i++) {
                 if(p2Pieces.get(i).getMoveSize() > 1){
                     System.out.println(p2Pieces.get(i).getId() + ": [" + p2Pieces.get(i).printMove() + "]");}
+                else{
+                    System.out.println(p2Pieces.get(i).getId() + ": not moved");
+                }
             }
         }
     }
