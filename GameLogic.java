@@ -485,12 +485,12 @@ public class GameLogic implements PlayableLogic {
             ((Pawn) pieceStatistics).addKill(-count);
         }
 
-        int distance = src.distance(dest);
-        pieceStatistics.addDistance(-distance);
-
-        if(!allPiecesAtPosition[dest.getRow()][dest.getCol()].isEmpty()){
-            allPiecesAtPosition[dest.getRow()][dest.getCol()].remove(allPiecesAtPosition[dest.getRow()][dest.getCol()].size()-1);
-        }
+//        int distance = src.distance(dest);
+//        pieceStatistics.addDistance(-distance);
+//
+//        if(!allPiecesAtPosition[dest.getRow()][dest.getCol()].isEmpty()){
+//            allPiecesAtPosition[dest.getRow()][dest.getCol()].remove(allPiecesAtPosition[dest.getRow()][dest.getCol()].size()-1);
+//        }
     }
     public void sofSaif(){
         for (int i = 1; i <= 75; i++) {
