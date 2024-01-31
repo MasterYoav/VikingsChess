@@ -23,8 +23,6 @@ public class GameLogic implements PlayableLogic {
         reset();
 
     }
-
-
     @Override
     public boolean move(Position a, Position b) {
         ConcretePiece piece = board[a.getRow()][a.getCol()];
@@ -76,11 +74,11 @@ public class GameLogic implements PlayableLogic {
                     statisticKills();
                     sofSaif();
 
-                    //statisticDistance();
-                    sofSaif();
+//                    statisticDistance();
+//                    sofSaif();
 
-                    statisticAllPiecesAtPosition();
-                    sofSaif();
+//                    statisticAllPiecesAtPosition();
+//                    sofSaif();
 
                     return true;
                 }
@@ -89,7 +87,6 @@ public class GameLogic implements PlayableLogic {
         }
         return false;
     }
-
     public void statisticMoves(){
         Collections.sort(p1Pieces, new moveSort());
         Collections.sort(p2Pieces, new moveSort());
@@ -97,50 +94,48 @@ public class GameLogic implements PlayableLogic {
             for (int i = 0; i < p2Pieces.size(); i++) {
                 if(p2Pieces.get(i).getMoveSize() > 1){
                     System.out.println(p2Pieces.get(i).getId() + ": [" + p2Pieces.get(i).printMove() + "]");}
-                else{
-                    System.out.println(p2Pieces.get(i).getId() + ": not moved");
-                }
+//                else{
+//                    System.out.println(p2Pieces.get(i).getId() + ": not moved");
+//                }
             }
             for (int j = 0; j < p1Pieces.size(); j++) {
                 if(p1Pieces.get(j).getMoveSize() > 1){
                     System.out.println(p1Pieces.get(j).getId() + ": [" + p1Pieces.get(j).printMove() + "]");}
-                else{
-                    System.out.println(p1Pieces.get(j).getId() + ": not move");
-                }
+//                else{
+//                    System.out.println(p1Pieces.get(j).getId() + ": not move");
+//                }
             }
         }
         else{
             for (int j = 0; j < p1Pieces.size(); j++) {
                 if(p1Pieces.get(j).getMoveSize() > 1){
                     System.out.println(p1Pieces.get(j).getId() + ": [" + p1Pieces.get(j).printMove() + "]");}
-                else{
-                    System.out.println(p1Pieces.get(j).getId() + ": not moved");
-                }
+//                else{
+//                    System.out.println(p1Pieces.get(j).getId() + ": not moved");
+//                }
             }
             for (int i = 0; i < p2Pieces.size(); i++) {
                 if(p2Pieces.get(i).getMoveSize() > 1){
                     System.out.println(p2Pieces.get(i).getId() + ": [" + p2Pieces.get(i).printMove() + "]");}
-                else{
-                    System.out.println(p2Pieces.get(i).getId() + ": not moved");
-                }
+//                else{
+//                    System.out.println(p2Pieces.get(i).getId() + ": not moved");
+//                }
             }
         }
     }
-
+    public void statisticKills(){
+        Collections.sort(allPawns, new killSort());
+        for (int i = 0; i < allPawns.size(); i++) {
+            if(allPawns.get(i).getKills() > 0){
+                System.out.println(allPawns.get(i).getId() + ": " + allPawns.get(i).getKills() + " kills");}
+        }
+    }
     public void statisticDistance(){
         Collections.sort(allPieces, new distanceSort());
         for (int i = 0; i < allPieces.size(); i++) {
             if(allPieces.get(i).getDistance() > 0){
                 System.out.println(allPieces.get(i).getId() + ": " + allPieces.get(i).getDistance() + " squares");
             }
-        }
-    }
-
-    public void statisticKills(){
-        Collections.sort(allPawns, new killSort());
-        for (int i = 0; i < allPawns.size(); i++) {
-            if(allPawns.get(i).getKills() > 0){
-                System.out.println(allPawns.get(i).getId() + ": " + allPawns.get(i).getKills() + " kills");}
         }
     }
     private void statisticAllPiecesAtPosition(){
@@ -183,6 +178,13 @@ public class GameLogic implements PlayableLogic {
                 if(left.isLeftSide()&&!leftP.getType().equals("♔")){//checking if our move kill a pawn next to the left wall
                     if(leftP.getOwner()!= pivotP.getOwner()){
                         board[left.getRow()][left.getCol()] = null;
+                        for (Pawn pawn : allPawns) {
+                            if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
+                                pawn.addKill();
+                                System.out.println(pawn.getKills());
+                                break;
+                            }
+                        }
                     }
                 }
                 else {//we need to check the left side of "left"
@@ -193,6 +195,13 @@ public class GameLogic implements PlayableLogic {
                             if (!leftOFleftP.getType().equals("♔")) {
                                 if (leftOFleftP.getOwner() == pivotP.getOwner() && pivotP.getOwner() != leftP.getOwner()) {
                                     board[left.getRow()][left.getCol()] = null;
+                                    for (Pawn pawn : allPawns) {
+                                        if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
+                                            pawn.addKill();
+                                            System.out.println(pawn.getKills());
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -212,6 +221,13 @@ public class GameLogic implements PlayableLogic {
                 if(right.isRightSide()&&!rightP.getType().equals("♔")){//checking if our move kill a pawn next to the left wall
                     if(rightP.getOwner()!= pivotP.getOwner()){
                         board[right.getRow()][right.getCol()] = null;
+                        for (Pawn pawn : allPawns) {
+                            if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
+                                pawn.addKill();
+                                System.out.println(pawn.getKills());
+                                break;
+                            }
+                        }
                     }
                 }
                 else {//we need to check the right side of "right"
@@ -222,6 +238,13 @@ public class GameLogic implements PlayableLogic {
                             if(!rightOFrightP.getType().equals("♔")) {
                                 if (rightOFrightP.getOwner() == pivotP.getOwner() && pivotP.getOwner() != rightP.getOwner()) {
                                     board[right.getRow()][right.getCol()] = null;
+                                    for (Pawn pawn : allPawns) {
+                                        if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
+                                            pawn.addKill();
+                                            System.out.println(pawn.getKills());
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -242,6 +265,13 @@ public class GameLogic implements PlayableLogic {
                 if(down.isDownSide()&&!downP.getType().equals("♔")){//checking if our move kill a pawn next to the left wall
                     if(downP.getOwner()!= pivotP.getOwner()){
                         board[down.getRow()][down.getCol()] = null;
+                        for (Pawn pawn : allPawns) {
+                            if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
+                                pawn.addKill();
+                                System.out.println(pawn.getKills());
+                                break;
+                            }
+                        }
                     }
                 }
                 else {//we need to check the down side of "down"
@@ -252,6 +282,13 @@ public class GameLogic implements PlayableLogic {
                             if(!downOFdownP.getType().equals("♔")){
                                 if(downOFdownP.getOwner()==pivotP.getOwner()&&pivotP.getOwner()!=downP.getOwner()){
                                     board[down.getRow()][down.getCol()] = null;
+                                    for (Pawn pawn : allPawns) {
+                                        if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
+                                            pawn.addKill();
+                                            System.out.println(pawn.getKills());
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -262,25 +299,38 @@ public class GameLogic implements PlayableLogic {
         //Up check
         if(up!=null){
             ConcretePiece upP=(ConcretePiece)getPieceAtPosition(up);
-            if(upP!=null){
-                if (upP.getType().equals("♔")){//checking if our move killed the king
-                    if(isKingDead(up)){
-                        GameLogic.gameFinished=true;
+            if(upP!=null) {
+                if (upP.getType().equals("♔")) {//checking if our move killed the king
+                    if (isKingDead(up)) {
+                        GameLogic.gameFinished = true;
                     }
                 }
-                if(up.isUpSide()&&!upP.getType().equals("♔")){//checking if our move kill a pawn next to the left wall
-                    if(upP.getOwner()!= pivotP.getOwner()){
+                if (up.isUpSide() && !upP.getType().equals("♔")) {//checking if our move kill a pawn next to the left wall
+                    if (upP.getOwner() != pivotP.getOwner()) {
                         board[up.getRow()][up.getCol()] = null;
+                        for (Pawn pawn : allPawns) {
+                            if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
+                                pawn.addKill();
+                                System.out.println(pawn.getKills());
+                                break;
+                            }
+                        }
                     }
-                }
-                else {//we need to check the up side of "up"
-                    Position upOFup=Position.getUp(up);
-                    if (upOFup!=null){
-                        ConcretePiece upOFupP=(ConcretePiece)getPieceAtPosition(upOFup);
-                        if(upOFupP!=null && !upP.getType().equals("♔")){
-                            if(!upOFupP.getType().equals("♔")){
-                                if(upOFupP.getOwner()==pivotP.getOwner()&&pivotP.getOwner()!=upP.getOwner()){
+                } else {//we need to check the up side of "up"
+                    Position upOFup = Position.getUp(up);
+                    if (upOFup != null) {
+                        ConcretePiece upOFupP = (ConcretePiece) getPieceAtPosition(upOFup);
+                        if (upOFupP != null && !upP.getType().equals("♔")) {
+                            if (!upOFupP.getType().equals("♔")) {
+                                if (upOFupP.getOwner() == pivotP.getOwner() && pivotP.getOwner() != upP.getOwner()) {
                                     board[up.getRow()][up.getCol()] = null;
+                                    for (Pawn pawn : allPawns) {
+                                        if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
+                                            pawn.addKill();
+                                            System.out.println(pawn.getKills());
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -288,10 +338,7 @@ public class GameLogic implements PlayableLogic {
                 }
             }
         }
-
-
     }
-
     private boolean isKingDead(Position pivot) {
         Player p = getPieceAtPosition(pivot).getOwner();
         Position left = Position.getLeft(pivot);
@@ -317,7 +364,6 @@ public class GameLogic implements PlayableLogic {
         }
         return false;
     }
-    // Helper method to check if the path is clear for the pawn's move
     private boolean isPathClear(Position a, Position b) {
         int rowDiff = b.getRow() - a.getRow();
         int colDiff = b.getCol() - a.getCol();
@@ -340,27 +386,20 @@ public class GameLogic implements PlayableLogic {
 
         return true;
     }
-
-
-
     @Override
     public Piece getPieceAtPosition(Position position) {
         if(position==null){return null;} 
         return board[position.getRow()][position.getCol()];
     }
-
     @Override
     public Player getFirstPlayer() {
         return Defender;
 
     }
-
     @Override
     public Player getSecondPlayer() {
             return Attacker;
         }
-
-
     @Override
     public boolean isSecondPlayerTurn() {
         return secondPlayerTurn;
@@ -368,8 +407,6 @@ public class GameLogic implements PlayableLogic {
     public boolean isGameFinished(){
         return GameLogic.gameFinished;
     }
-
-
     @Override
     public void reset() {
         GameLogic.secondPlayerTurn=true;
@@ -472,7 +509,6 @@ public class GameLogic implements PlayableLogic {
         }
         return Math.abs(countCurr - countLast);
     }
-
     @Override
     public int getBoardSize() {
         return 11;

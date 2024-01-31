@@ -6,8 +6,12 @@ public class Pawn extends ConcretePiece{
         kills=0;
     }
     public String getType(){return "♙";}
+
     public void addKill(int num){
-        this.kills = num;
+        kills = num;
+    }
+    public void addKill(){
+        kills++;
     }
     public void setKill(int num){
         this.kills = num;

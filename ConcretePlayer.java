@@ -9,7 +9,6 @@ public class ConcretePlayer implements Player{
     public boolean isPlayerOne() {
         return Player;
     }
-
     @Override
     public int getWins() {
         return wins;
