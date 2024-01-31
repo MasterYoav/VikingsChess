@@ -9,8 +9,8 @@ public class piecesSort implements Comparator<Position> {
                     return o1.getCol() - o2.getCol();
                 }
             }
-            return o2.getRow() - o1.getRow();
+            return o1.getRow() - o2.getRow();
         }
-        return o1.getCountPieces() - o2.getCountPieces();
+        return o2.getCountPieces() - o1.getCountPieces();
     }
 }

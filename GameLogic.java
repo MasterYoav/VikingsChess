@@ -51,7 +51,7 @@ public class GameLogic implements PlayableLogic {
                 }
 
                 // If the movement path is clear, update the board
-                System.out.println("start position ("+a.toString()+")  end position ("+b.toString() +")");
+               // System.out.println("start position ("+a.toString()+")  end position ("+b.toString() +")");
                 board[b.getRow()][b.getCol()] = piece;
                 board[a.getRow()][a.getCol()] = null;
                 eatPiece(b);
@@ -93,7 +93,7 @@ public class GameLogic implements PlayableLogic {
         if(GameLogic.AttackerWon){
             for (int i = 0; i < p2Pieces.size(); i++) {
                 if(p2Pieces.get(i).getMoveSize() > 1){
-                    System.out.println(p2Pieces.get(i).getId() + ": [" + "("+p2Pieces.get(i).printMove()+")" + "]");}
+                    System.out.println(p2Pieces.get(i).getId() + ": [" +p2Pieces.get(i).printMove() + "]");}
 //                else{
 //                    System.out.println(p2Pieces.get(i).getId() + ": not moved");
 //                }
@@ -182,7 +182,7 @@ public class GameLogic implements PlayableLogic {
                         for (Pawn pawn : allPawns) {
                             if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
                                 pawn.addKill();
-                                System.out.println(pawn.getKills());
+                                //System.out.println(pawn.getKills());
                                 break;
                             }
                         }
@@ -199,7 +199,7 @@ public class GameLogic implements PlayableLogic {
                                     for (Pawn pawn : allPawns) {
                                         if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
                                             pawn.addKill();
-                                            System.out.println(pawn.getKills());
+                                           // System.out.println(pawn.getKills());
                                             break;
                                         }
                                     }
@@ -225,7 +225,7 @@ public class GameLogic implements PlayableLogic {
                         for (Pawn pawn : allPawns) {
                             if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
                                 pawn.addKill();
-                                System.out.println(pawn.getKills());
+                                //System.out.println(pawn.getKills());
                                 break;
                             }
                         }
@@ -242,7 +242,7 @@ public class GameLogic implements PlayableLogic {
                                     for (Pawn pawn : allPawns) {
                                         if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
                                             pawn.addKill();
-                                            System.out.println(pawn.getKills());
+                                            //System.out.println(pawn.getKills());
                                             break;
                                         }
                                     }
@@ -269,7 +269,7 @@ public class GameLogic implements PlayableLogic {
                         for (Pawn pawn : allPawns) {
                             if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
                                 pawn.addKill();
-                                System.out.println(pawn.getKills());
+                               // System.out.println(pawn.getKills());
                                 break;
                             }
                         }
@@ -286,7 +286,7 @@ public class GameLogic implements PlayableLogic {
                                     for (Pawn pawn : allPawns) {
                                         if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
                                             pawn.addKill();
-                                            System.out.println(pawn.getKills());
+                                            //System.out.println(pawn.getKills());
                                             break;
                                         }
                                     }
@@ -312,7 +312,7 @@ public class GameLogic implements PlayableLogic {
                         for (Pawn pawn : allPawns) {
                             if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
                                 pawn.addKill();
-                                System.out.println(pawn.getKills());
+                                //System.out.println(pawn.getKills());
                                 break;
                             }
                         }
@@ -328,7 +328,7 @@ public class GameLogic implements PlayableLogic {
                                     for (Pawn pawn : allPawns) {
                                         if (pawn.getId().equals(pivotP.getId()) && pawn.getOwner() == pivotP.getOwner()) {
                                             pawn.addKill();
-                                            System.out.println(pawn.getKills());
+                                            //System.out.println(pawn.getKills());
                                             break;
                                         }
                                     }
