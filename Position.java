@@ -58,7 +58,11 @@ public class Position {
         if(this.col == 10 && this.row == 10){return true;}
         return false;
     }
-
+    public int distance(Position pos){
+        if(this.row != pos.row && this.col != pos.col){return 0;}
+        if (this.row == pos.row){return Math.abs(pos.col - this.col);}
+        return Math.abs(pos.row - this.row);
+    }
     @Override
     public String toString() {
         return (Integer.toString(row)+" "+Integer.toString(col));

@@ -1,5 +1,8 @@
 import org.junit.jupiter.api.parallel.Resources;
 
+import java.util.ArrayList;
+import java.util.Stack;
+
 public class GameLogic implements PlayableLogic {
     private ConcretePlayer Defender;
     private ConcretePlayer Attacker;
@@ -8,6 +11,14 @@ public class GameLogic implements PlayableLogic {
             {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 1, 0, 2, 2, 3, 2, 2, 0, 1, 1}, {1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0}};
     private static ConcretePiece[][] board = new ConcretePiece[11][11];
     private static boolean secondPlayerTurn;
+    private static Stack<ConcretePiece[][]> BoardHistory = new Stack<ConcretePiece[][]>();
+    private static Stack<ConcretePiece> lastPieceMoved = new Stack<ConcretePiece>();
+    private static ArrayList<ConcretePiece> p1Pieces = new ArrayList<ConcretePiece>();
+    private static ArrayList<ConcretePiece> p2Pieces = new ArrayList<ConcretePiece>();
+    private static ArrayList<ConcretePiece> allPieces = new ArrayList<ConcretePiece>();
+    private static ArrayList<Pawn> allPawns = new ArrayList<Pawn>();
+    private static ArrayList<ConcretePiece>[][] allPiecesAtPosition = new ArrayList[11][11];
+
     public GameLogic(int size) {
         Attacker = new ConcretePlayer(false);
         Defender = new ConcretePlayer(true);
@@ -48,6 +59,12 @@ public class GameLogic implements PlayableLogic {
                 board[b.getRow()][b.getCol()] = piece;
                 board[a.getRow()][a.getCol()] = null;
                 eatPiece(b);
+                piece.addMove(b);
+                piece.addDistanceCount(a.distance(b));
+                allPiecesAtPosition[b.getRow()][b.getCol()].add(piece);
+                ConcretePiece[][] currentBoard = copyBoard();
+                GameLogic.BoardHistory.push(currentBoard);
+                lastPieceMoved.push(piece);
                 isGameFinished();
                 secondPlayerTurn=!secondPlayerTurn;
                 if(piece.getType().equals("♔")&&b.isCorner()){
@@ -288,20 +305,90 @@ public class GameLogic implements PlayableLogic {
             ConcretePiece p = null;
             if (startboard[i][j] == 1) {
                 p = new Pawn(Atk);
+                Position pos = new Position(i,j);
+                p.addMove(pos);
+                p2Pieces.add(p);
+                allPawns.add((Pawn) p);
+                allPieces.add(p);
             }
             if (startboard[i][j] == 2) {
                 p = new Pawn(Def);
+                Position pos = new Position(i,j);
+                p.addMove(pos);
+                p1Pieces.add(p);
+                allPawns.add((Pawn) p);
+                allPieces.add(p);
             }
             if (startboard[i][j] == 3) {
                 p = new King(Def);
+                Position pos = new Position(i,j);
+                p.addMove(pos);
+                p1Pieces.add(p);
+                allPieces.add(p);
             }
             board[i][j] = p;
+            allPiecesAtPosition[i][j] = new ArrayList<ConcretePiece>();
+            if(p != null) {
+                allPiecesAtPosition[i][j].add(p);
+            }
         }
+        ConcretePiece[][] currentBoard = copyBoard();
+        GameLogic.BoardHistory.push(currentBoard);
     }}
-
+    private void switchBoard(ConcretePiece[][] currentB) {
+        for (int row = 0; row < 11; row++) {
+            for (int col = 0; col < 11; col++) {
+                board[row][col] = currentB[row][col];
+            }
+        }
+    }
+    private ConcretePiece[][] copyBoard() {
+        ConcretePiece[][] ans = new ConcretePiece[11][11];
+        for (int i = 0; i < 11; i++) {
+            for (int j = 0; j < 11; j++) {
+                ans[i][j] = board[i][j];
+            }
+        }
+        return ans;
+    }
     @Override
     public void undoLastMove() {
+        if(GameLogic.BoardHistory != null && GameLogic.BoardHistory.size() > 1){
+            ConcretePiece[][] last = GameLogic.BoardHistory.pop();
+            ConcretePiece[][] current = GameLogic.BoardHistory.peek();
+            changeStats(current, last);
+            switchBoard(current);
+            GameLogic.secondPlayerTurn = !GameLogic.secondPlayerTurn;
+        }
+    }
+    private void changeStats(ConcretePiece[][] current, ConcretePiece[][] last) {
+        ConcretePiece pieceStatistics = lastPieceMoved.pop();
+        Position dest = pieceStatistics.getLastMove();
+        Position src = pieceStatistics.getLastMove();
+        pieceStatistics.removeMove();
 
+        if(pieceStatistics instanceof Pawn){
+            int count = killCount(current, last);
+            ((Pawn) pieceStatistics).addKill(-count);
+        }
+
+        int distance = src.distance(dest);
+        pieceStatistics.addDistanceCount(-distance);
+
+        if(!allPiecesAtPosition[dest.getRow()][dest.getCol()].isEmpty()){
+            allPiecesAtPosition[dest.getRow()][dest.getCol()].remove(allPiecesAtPosition[dest.getRow()][dest.getCol()].size()-1);
+        }
+    }
+    private int killCount(ConcretePiece[][] current, ConcretePiece[][] last) {
+        int countCurr = 0;
+        int countLast = 0;
+        for (int i = 0; i < 11; i++) {
+            for (int j = 0; j < 11; j++) {
+                if(current[i][j] != null){countCurr++;}
+                if(last[i][j] != null){countLast++;}
+            }
+        }
+        return Math.abs(countCurr - countLast);
     }
 
     @Override
