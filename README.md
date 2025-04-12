@@ -92,13 +92,6 @@ Main classes:
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome!  
-Open an issue or submit a pull request if you want to improve the game or fix bugs.
-
----
-
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
@@ -108,5 +101,3 @@ This project is licensed under the [MIT License](LICENSE).
 ## 👨‍🎓 Author
 
 Developed by **Yoav Peretz & Gil Elbaz**  
-B.Sc. Computer Science 
-Course: Object-Oriented Programming (OOP)
