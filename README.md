@@ -64,6 +64,13 @@ Main classes:
 ---
 
 ## 💻 Installation
+You can download the game here:
+- 🪟 [Windows (MSI)](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-1.0.0.msi)
+- 🍎 [macOS (DMG)](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-1.0.0.dmg)
+- 🐧 [Linux (.deb)](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-1.0.0.deb)
+
+
+---
 
 1. Clone the repository:
    ```bash
