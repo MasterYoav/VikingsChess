@@ -64,8 +64,7 @@ jobs:
       shell: bash
 
     - name: Upload portable app to release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: VikingsChess-${{ matrix.platform }}-app.${{ matrix.archive-ext }}
+      run: |
+        gh release upload v1.0.1 VikingsChess-${{ matrix.platform }}-app.${{ matrix.archive-ext }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
