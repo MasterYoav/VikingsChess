@@ -6,6 +6,7 @@ This project was developed as part of an Object-Oriented Programming (OOP) assig
 ## 📌 Table of Contents
 - [Overview](#overview)
 - [Features](#features)
+- [Download](#download)
 - [Game Rules](#game-rules)
 - [Architecture](#architecture)
 - [Installation](#installation)
@@ -30,6 +31,31 @@ This project recreates the game with a full GUI, object-oriented architecture, a
 - Turn-based gameplay for two players
 - Object-oriented modular design
 - Easily extendable and customizable
+
+---
+
+## ⬇️ Download
+
+Get the latest release of VikingsChess for your platform:
+
+### 📱 Ready-to-Run Executables
+[![Latest Release](https://img.shields.io/github/v/release/MasterYoav/VikingsChess?label=Latest%20Release&style=for-the-badge)](https://github.com/MasterYoav/VikingsChess/releases/latest)
+
+| Platform | Download | Type |
+|----------|----------|------|
+| 🪟 **Windows** | [Download .msi installer](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-windows.msi) | Windows Installer |
+| 🐧 **Linux** | [Download .deb package](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-linux.deb) | Debian Package |
+| 🍎 **macOS** | [Download .dmg installer](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-macos.dmg) | macOS Disk Image |
+
+### 📦 Portable Apps (No Installation Required)
+
+| Platform | Download | Instructions |
+|----------|----------|-------------|
+| 🪟 **Windows** | [VikingsChess-windows-app.zip](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-windows-app.zip) | Extract and run `VikingsChess.exe` |
+| 🐧 **Linux** | [VikingsChess-linux-app.tar.gz](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-linux-app.tar.gz) | Extract and run `VikingsChess` |
+| 🍎 **macOS** | [VikingsChess-macos-app.tar.gz](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-macos-app.tar.gz) | Extract and run `VikingsChess.app` |
+
+> **Note**: These executables include a bundled Java runtime, so you don't need Java installed on your system!
 
 ---
 
