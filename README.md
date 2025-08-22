@@ -37,15 +37,18 @@ This project recreates the game with a full GUI, object-oriented architecture, a
 
 [![Latest Release](https://img.shields.io/github/v/release/MasterYoav/VikingsChess?label=Latest%20Release&style=for-the-badge)](https://github.com/MasterYoav/VikingsChess/releases/latest)
 
-**Portable Apps - No Installation Required!**
+**Ready-to-Run Downloads:**
 
-| Platform | Download | Instructions |
+| Platform | Download | Requirements |
 |----------|----------|-------------|
-| 🪟 **Windows** | [VikingsChess-windows-app.zip](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-windows-app.zip) | Extract and run `VikingsChess.exe` |
-| 🐧 **Linux** | [VikingsChess-linux-app.tar.gz](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-linux-app.tar.gz) | Extract and run `VikingsChess` |
-| 🍎 **macOS** | [VikingsChess-macos-app.tar.gz](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-macos-app.tar.gz) | Extract and run `VikingsChess.app` |
+| 🍎 **macOS** | [VikingsChess.app.zip](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess.app.zip) | **None!** Includes Java runtime |
+| 🪟 **Windows** | [VikingsChess-windows.zip](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-windows.zip) | Requires Java installed |
+| 🐧 **Linux** | [VikingsChess-linux.tar.gz](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-linux.tar.gz) | Requires Java installed |
 
-> **Note**: These executables include a bundled Java runtime, so you don't need Java installed on your system!
+**How to Run:**
+- **🍎 macOS**: Download, unzip, double-click `VikingsChess.app`
+- **🪟 Windows**: Download, unzip, double-click `VikingsChess.exe`
+- **🐧 Linux**: Download, extract, run `./VikingsChess`
 
 ---
 
