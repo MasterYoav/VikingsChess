@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -13,13 +16,16 @@ jobs:
         include:
           - os: ubuntu-latest
             platform: linux
-            installer-type: "deb"
+            archive-cmd: "tar -czf"
+            archive-ext: "tar.gz"
           - os: windows-latest
             platform: windows
-            installer-type: "msi"
+            archive-cmd: "7z a -tzip"
+            archive-ext: "zip"
           - os: macos-latest
             platform: macos
-            installer-type: "dmg"
+            archive-cmd: "tar -czf"
+            archive-ext: "tar.gz"
 
     steps:
     - name: Checkout code
@@ -43,65 +49,23 @@ jobs:
     - name: Create app image
       run: ./gradlew jpackage
 
-    - name: Create installer (Linux)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        jpackage \
-          --type deb \
-          --input build/libs \
-          --dest build/installers \
-          --name VikingsChess \
-          --main-class Main \
-          --main-jar VikingsChess-1.0.0.jar \
-          --runtime-image build/jre \
-          --app-version 1.0.0 \
-          --vendor "VikingsChess" \
-          --linux-shortcut \
-          --linux-menu-group "Games"
-
-    - name: Create installer (Windows)
+    - name: Archive app image (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        jpackage --type msi --input build/libs --dest build/installers --name VikingsChess --main-class Main --main-jar VikingsChess-1.0.0.jar --runtime-image build/jre --app-version 1.0.0 --vendor "VikingsChess" --win-menu --win-menu-group "Games"
-
-    - name: Create installer (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        jpackage \
-          --type dmg \
-          --input build/libs \
-          --dest build/installers \
-          --name VikingsChess \
-          --main-class Main \
-          --main-jar VikingsChess-1.0.0.jar \
-          --runtime-image build/jre \
-          --app-version 1.0.0 \
-          --vendor "VikingsChess" \
-          --mac-package-identifier "com.vikingschess.app"
-
-    - name: Archive app image
-      run: |
         cd build/dist
-        if [ "${{ matrix.os }}" = "windows-latest" ]; then
-          powershell Compress-Archive VikingsChess* ../../VikingsChess-${{ matrix.platform }}-app.zip
-        else
-          tar -czf ../../VikingsChess-${{ matrix.platform }}-app.tar.gz VikingsChess*
-        fi
+        7z a -tzip ../../VikingsChess-${{ matrix.platform }}-app.zip VikingsChess*
       shell: bash
 
-    - name: Upload app image to release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          VikingsChess-${{ matrix.platform }}-app.*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Archive app image (Unix)
+      if: matrix.os != 'windows-latest'
+      run: |
+        cd build/dist
+        tar -czf ../../VikingsChess-${{ matrix.platform }}-app.tar.gz VikingsChess*
+      shell: bash
 
-    - name: Upload installer to release
-      uses: softprops/action-gh-release@v1
+    - name: Upload portable app to release
+      uses: softprops/action-gh-release@v2
       with:
-        files: |
-          build/installers/VikingsChess*.${{ matrix.installer-type }}
+        files: VikingsChess-${{ matrix.platform }}-app.${{ matrix.archive-ext }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      continue-on-error: true

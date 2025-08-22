@@ -4,15 +4,14 @@ VikingsChess is a Java-based implementation of the ancient Norse strategy game *
 This project was developed as part of an Object-Oriented Programming (OOP) assignment at Ariel University, focusing on practicing OOP principles.
 
 ## 📌 Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Download](#download)
-- [Game Rules](#game-rules)
-- [Architecture](#architecture)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+- [Overview](#-overview)
+- [Features](#-features)
+- [Download](#-download)
+- [Game Rules](#-game-rules)
+- [Architecture](#-architecture)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [License](#-license)
 
 ---
 
@@ -36,18 +35,9 @@ This project recreates the game with a full GUI, object-oriented architecture, a
 
 ## ⬇️ Download
 
-Get the latest release of VikingsChess for your platform:
-
-### 📱 Ready-to-Run Executables
 [![Latest Release](https://img.shields.io/github/v/release/MasterYoav/VikingsChess?label=Latest%20Release&style=for-the-badge)](https://github.com/MasterYoav/VikingsChess/releases/latest)
 
-| Platform | Download | Type |
-|----------|----------|------|
-| 🪟 **Windows** | [Download .msi installer](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-windows.msi) | Windows Installer |
-| 🐧 **Linux** | [Download .deb package](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-linux.deb) | Debian Package |
-| 🍎 **macOS** | [Download .dmg installer](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-macos.dmg) | macOS Disk Image |
-
-### 📦 Portable Apps (No Installation Required)
+**Portable Apps - No Installation Required!**
 
 | Platform | Download | Instructions |
 |----------|----------|-------------|
