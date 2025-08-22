@@ -1,51 +1,81 @@
 plugins {
   id 'application'
-  id 'org.beryx.runtime' version '1.13.1'
 }
 
-group = 'com.masteryoav'
-version = '1.0.0'   // bump when you tag a new release
+group = 'com.vikingschess'
+version = '1.0.0'
 
 repositories { mavenCentral() }
 
 application {
-  // Your entry point is in the default package:
+  // Your entry point class (default package):
   mainClass = 'Main'
 }
 
 java {
-  toolchain { languageVersion = JavaLanguageVersion.of(21) }
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(23)
+  }
 }
 
-runtime {
-  // Minimal runtime for a Swing app
-  modules = [
-    'java.base',
-    'java.desktop'   // Swing/AWT
-    // add 'java.logging' etc. if you use them
-  ]
-  options = ['--strip-debug', '--no-header-files', '--no-man-pages']
-
-  jpackage {
-    imageName   = 'VikingsChess'
-    appVersion  = project.version.toString()
-    vendor      = 'VikingsChess'
-
-    // Platform icons (optional): put files under packaging/icon.ico|icns|png
-    def os = org.gradle.internal.os.OperatingSystem.current()
-    icon = os.isWindows() ? file('packaging/icon.ico').path
-         : os.isMacOsX()  ? file('packaging/icon.icns').path
-                          : file('packaging/icon.png').path
-
-    // Memory / JVM args if you want:
-    jvmArgs = ['-Xms128m', '-Xmx512m']
-
-    // Nice defaults per OS
-    installerType = os.isWindows() ? 'msi' : null
-    linuxShortcut  = true
-    linuxMenuGroup = 'Games'
-
-    // macOS identifiers (signing can be added later)
-    macPackageIdentifier = 'com.masteryoav.vikingschess'
+/* map sources to repo root so you don't have to move files now */
+sourceSets {
+  main {
+    java { srcDirs = ['.'] }
+    resources { srcDirs = [] }
   }
+  test { java { srcDirs = [] } }
+}
+
+// Custom task to create a runtime image
+task runtime(type: Exec) {
+  dependsOn 'build'
+  doFirst {
+    delete "${buildDir}/jre"
+  }
+  
+  commandLine 'jlink',
+    '--add-modules', 'java.base,java.desktop',
+    '--strip-debug',
+    '--no-header-files',
+    '--no-man-pages',
+    '--output', "${buildDir}/jre"
+}
+
+// Custom task to create jpackage
+task jpackage(type: Exec) {
+  dependsOn 'runtime'
+  doFirst {
+    delete "${buildDir}/dist"
+  }
+  
+  def os = org.gradle.internal.os.OperatingSystem.current()
+  def iconPath = os.isWindows() ? 'packaging/icon.ico'
+               : os.isMacOsX()  ? 'packaging/icon.icns'
+                                : 'packaging/icon.png'
+  
+  def baseArgs = [
+    'jpackage',
+    '--type', 'app-image',
+    '--input', "${buildDir}/libs",
+    '--dest', "${buildDir}/dist",
+    '--name', 'VikingsChess',
+    '--main-class', 'Main',
+    '--main-jar', "${project.name}-${version}.jar",
+    '--runtime-image', "${buildDir}/jre",
+    '--app-version', version.toString(),
+    '--vendor', 'VikingsChess'
+  ]
+  
+  // Add icon if file exists
+  if (file(iconPath).exists()) {
+    baseArgs += ['--icon', iconPath]
+  }
+  
+  // Add OS-specific options
+  if (os.isMacOsX()) {
+    baseArgs += ['--mac-package-identifier', 'com.vikingschess.app']
+  }
+  
+  commandLine baseArgs
 }
