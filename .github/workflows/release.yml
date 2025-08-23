@@ -54,7 +54,10 @@ jobs:
       run: |
         cd build/dist
         # Find the generated .deb file and rename it to our expected name
-        mv *.deb ${{ matrix.executable-name }}
+        GENERATED_FILE=$(ls *.deb)
+        if [ "$GENERATED_FILE" != "${{ matrix.executable-name }}" ]; then
+          mv "$GENERATED_FILE" "${{ matrix.executable-name }}"
+        fi
         ls -la
       shell: bash
 
@@ -63,8 +66,11 @@ jobs:
       run: |
         cd build/dist
         # Find the generated .exe file and rename it to our expected name
-        mv *.exe ${{ matrix.executable-name }}
-        dir
+        GENERATED_FILE=$(ls *.exe)
+        if [ "$GENERATED_FILE" != "${{ matrix.executable-name }}" ]; then
+          mv "$GENERATED_FILE" "${{ matrix.executable-name }}"
+        fi
+        ls -la
       shell: bash
 
     - name: Find and rename executable (macOS)
@@ -72,7 +78,10 @@ jobs:
       run: |
         cd build/dist
         # Find the generated .dmg file and rename it to our expected name
-        mv *.dmg ${{ matrix.executable-name }}
+        GENERATED_FILE=$(ls *.dmg)
+        if [ "$GENERATED_FILE" != "${{ matrix.executable-name }}" ]; then
+          mv "$GENERATED_FILE" "${{ matrix.executable-name }}"
+        fi
         ls -la
       shell: bash
 
@@ -80,5 +89,15 @@ jobs:
       run: |
         cd build/dist
         gh release upload ${{ github.event.release.tag_name }} ${{ matrix.executable-name }} --clobber
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Remove source code assets (only run once)
+    - name: Remove source code assets
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        # Delete the auto-generated source code assets
+        gh release delete-asset ${{ github.event.release.tag_name }} "Source code (zip)" --yes || true
+        gh release delete-asset ${{ github.event.release.tag_name }} "Source code (tar.gz)" --yes || true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

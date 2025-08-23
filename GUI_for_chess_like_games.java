@@ -28,6 +28,12 @@ public class GUI_for_chess_like_games extends JFrame {
         this.BOARD_SIZE = gameLogic.getBoardSize();
         setTitle(title);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // Set font for labels that use chess symbols
+        Font labelFont = getLabelFont();
+        playerTowWinsLabel.setFont(labelFont);
+        playerOneWinsLabel.setFont(labelFont);
+        
         // Create a panel for the top section
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         // Adding the back button to the bottom of the main panel
@@ -133,7 +139,9 @@ public class GUI_for_chess_like_games extends JFrame {
             for (int row = 0; row < BOARD_SIZE; row++) {
                 buttons[row][col] = new JButton();
                 buttons[row][col].setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE)); // Adjust size as needed
-                Font chessFont = new Font("DejaVu Sans", Font.PLAIN, FONT_SIZE);
+                
+                // Use the same font logic as labels for consistency
+                Font chessFont = getChessFont(FONT_SIZE);
                 buttons[row][col].setFont(chessFont);
 
                 // Set alternating background colors for a chessboard pattern
@@ -220,5 +228,56 @@ public class GUI_for_chess_like_games extends JFrame {
             selectedButton.setBackground(selectedColor);
             selectedButton = null;
         }
+    }
+    
+    /**
+     * Get a font that supports chess symbols for the given size
+     */
+    private Font getChessFont(int size) {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("mac")) {
+                // macOS - try Apple Symbols first, then fallback
+                Font font = new Font("Apple Symbols", Font.PLAIN, size);
+                if (font.getFamily().equals("Apple Symbols")) {
+                    return font;
+                }
+                font = new Font("Helvetica Neue", Font.PLAIN, size);
+                if (font.getFamily().equals("Helvetica Neue")) {
+                    return font;
+                }
+            } else if (os.contains("win")) {
+                // Windows - try Segoe UI Symbol first
+                Font font = new Font("Segoe UI Symbol", Font.PLAIN, size);
+                if (font.getFamily().equals("Segoe UI Symbol")) {
+                    return font;
+                }
+                font = new Font("Arial Unicode MS", Font.PLAIN, size);
+                if (font.getFamily().equals("Arial Unicode MS")) {
+                    return font;
+                }
+            } else {
+                // Linux - try DejaVu Sans first
+                Font font = new Font("DejaVu Sans", Font.PLAIN, size);
+                if (font.getFamily().equals("DejaVu Sans")) {
+                    return font;
+                }
+                font = new Font("Noto Sans", Font.PLAIN, size);
+                if (font.getFamily().equals("Noto Sans")) {
+                    return font;
+                }
+            }
+        } catch (Exception e) {
+            // Fall through to default
+        }
+        // Ultimate fallback
+        return new Font(Font.SANS_SERIF, Font.PLAIN, size);
+    }
+    
+    /**
+     * Get a font for labels that use chess symbols
+     */
+    private Font getLabelFont() {
+        return getChessFont(12); // Smaller size for labels
     }
 }

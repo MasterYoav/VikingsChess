@@ -94,7 +94,9 @@ task jpackage(type: Exec) {
     // Linux options
     baseArgs += [
       '--linux-shortcut',
-      '--linux-menu-group', 'Games'
+      '--linux-menu-group', 'Games',
+      '--linux-deb-maintainer', 'vikingschess@example.com',
+      '--linux-package-deps', ''
     ]
   }
   
