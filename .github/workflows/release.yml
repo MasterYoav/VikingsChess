@@ -17,15 +17,15 @@ jobs:
           - os: ubuntu-latest
             platform: linux
             executable-ext: ".deb"
-            executable-name: "VikingsChess_1.0.1_amd64.deb"
+            executable-name: "VikingsChess_1.0.2_amd64.deb"
           - os: windows-latest
             platform: windows
             executable-ext: ".exe"
-            executable-name: "VikingsChess-1.0.1.exe"
+            executable-name: "VikingsChess-1.0.2.exe"
           - os: macos-latest
             platform: macos
             executable-ext: ".dmg"
-            executable-name: "VikingsChess-1.0.1.dmg"
+            executable-name: "VikingsChess-1.0.2.dmg"
 
     steps:
     - name: Checkout code
