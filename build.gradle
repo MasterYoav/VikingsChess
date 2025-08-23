@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.vikingschess'
-version = '1.0.0'
+version = '1.0.1'
 
 repositories { mavenCentral() }
 
@@ -42,7 +42,7 @@ task runtime(type: Exec) {
     '--output', "${buildDir}/jre"
 }
 
-// Custom task to create jpackage
+// Custom task to create native executables
 task jpackage(type: Exec) {
   dependsOn 'runtime'
   doFirst {
@@ -54,11 +54,70 @@ task jpackage(type: Exec) {
                : os.isMacOsX()  ? 'packaging/icon.icns'
                                 : 'packaging/icon.png'
   
+  // Determine the package type based on OS
+  def packageType = os.isWindows() ? 'exe'
+                  : os.isMacOsX()  ? 'dmg'  // or 'pkg' for installer
+                                   : 'deb'  // or 'rpm' for Red Hat systems
+  
+  def baseArgs = [
+    'jpackage',
+    '--type', packageType,
+    '--input', "${buildDir}/libs",
+    '--dest', "${buildDir}/dist",
+    '--name', 'VikingsChess',
+    '--main-class', 'Main',
+    '--main-jar', "${project.name}-${version}.jar",
+    '--runtime-image', "${buildDir}/jre",
+    '--app-version', version.toString(),
+    '--vendor', 'VikingsChess',
+    '--description', 'Vikings Chess Game'
+  ]
+  
+  // Add icon if file exists
+  if (file(iconPath).exists()) {
+    baseArgs += ['--icon', iconPath]
+  }
+  
+  // Add OS-specific options
+  if (os.isWindows()) {
+    baseArgs += [
+      '--win-dir-chooser',
+      '--win-shortcut',
+      '--win-menu'
+    ]
+  } else if (os.isMacOsX()) {
+    baseArgs += [
+      '--mac-package-identifier', 'com.vikingschess.app',
+      '--mac-package-name', 'VikingsChess'
+    ]
+  } else {
+    // Linux options
+    baseArgs += [
+      '--linux-shortcut',
+      '--linux-menu-group', 'Games'
+    ]
+  }
+  
+  commandLine baseArgs
+}
+
+// Alternative task for creating portable executables (app-image)
+task jpackagePortable(type: Exec) {
+  dependsOn 'runtime'
+  doFirst {
+    delete "${buildDir}/portable"
+  }
+  
+  def os = org.gradle.internal.os.OperatingSystem.current()
+  def iconPath = os.isWindows() ? 'packaging/icon.ico'
+               : os.isMacOsX()  ? 'packaging/icon.icns'
+                                : 'packaging/icon.png'
+  
   def baseArgs = [
     'jpackage',
     '--type', 'app-image',
     '--input', "${buildDir}/libs",
-    '--dest', "${buildDir}/dist",
+    '--dest', "${buildDir}/portable",
     '--name', 'VikingsChess',
     '--main-class', 'Main',
     '--main-jar', "${project.name}-${version}.jar",

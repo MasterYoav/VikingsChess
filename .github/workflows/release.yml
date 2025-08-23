@@ -16,16 +16,16 @@ jobs:
         include:
           - os: ubuntu-latest
             platform: linux
-            archive-cmd: "tar -czf"
-            archive-ext: "tar.gz"
+            executable-ext: ".deb"
+            executable-name: "VikingsChess_1.0.1_amd64.deb"
           - os: windows-latest
             platform: windows
-            archive-cmd: "7z a -tzip"
-            archive-ext: "zip"
+            executable-ext: ".exe"
+            executable-name: "VikingsChess-1.0.1.exe"
           - os: macos-latest
             platform: macos
-            archive-cmd: "tar -czf"
-            archive-ext: "tar.gz"
+            executable-ext: ".dmg"
+            executable-name: "VikingsChess-1.0.1.dmg"
 
     steps:
     - name: Checkout code
@@ -46,25 +46,39 @@ jobs:
     - name: Create runtime image
       run: ./gradlew runtime
 
-    - name: Create app image
+    - name: Create native executable
       run: ./gradlew jpackage
 
-    - name: Archive app image (Windows)
+    - name: Find and rename executable (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        cd build/dist
+        # Find the generated .deb file and rename it to our expected name
+        mv *.deb ${{ matrix.executable-name }}
+        ls -la
+      shell: bash
+
+    - name: Find and rename executable (Windows)
       if: matrix.os == 'windows-latest'
       run: |
         cd build/dist
-        7z a -tzip ../../VikingsChess-${{ matrix.platform }}-app.zip VikingsChess*
+        # Find the generated .exe file and rename it to our expected name
+        mv *.exe ${{ matrix.executable-name }}
+        dir
       shell: bash
 
-    - name: Archive app image (Unix)
-      if: matrix.os != 'windows-latest'
+    - name: Find and rename executable (macOS)
+      if: matrix.os == 'macos-latest'
       run: |
         cd build/dist
-        tar -czf ../../VikingsChess-${{ matrix.platform }}-app.tar.gz VikingsChess*
+        # Find the generated .dmg file and rename it to our expected name
+        mv *.dmg ${{ matrix.executable-name }}
+        ls -la
       shell: bash
 
-    - name: Upload portable app to release
+    - name: Upload executable to release
       run: |
-        gh release upload v1.0.1 VikingsChess-${{ matrix.platform }}-app.${{ matrix.archive-ext }}
+        cd build/dist
+        gh release upload ${{ github.event.release.tag_name }} ${{ matrix.executable-name }} --clobber
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
