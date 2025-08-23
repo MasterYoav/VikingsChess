@@ -85,7 +85,7 @@ Main classes:
 ## 💻 Installation
 
 ### Option 1: Download Pre-built Executable (Recommended)
-See the [Download](#download) section above for ready-to-run executables.
+See the [Download](#-download) section above for ready-to-run executables.
 
 ### Option 2: Build from Source
 1. Clone the repository:
