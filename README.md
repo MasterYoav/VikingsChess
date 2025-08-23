@@ -39,9 +39,9 @@ This project recreates the game with a full GUI, object-oriented architecture, a
 
 **Ready-to-Run Downloads:**
 
-🍎 [VikingsChess-Mac](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-1.0.3.dmg) 
-🪟 [VikingsChess-Windows](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-1.0.3.exe) 
-🐧 [VikingsChess-linux](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess_1.0.3_amd64.deb)
+[VikingsChess-Mac 🍎](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-1.0.3.dmg) ,
+[VikingsChess-Windows 🪟](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess-1.0.3.exe) ,
+[VikingsChess-linux 🐧](https://github.com/MasterYoav/VikingsChess/releases/latest/download/VikingsChess_1.0.3_amd64.deb)
 
 **Just Download, follow the installers, and enjoy the game!**
 
